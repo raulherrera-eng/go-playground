@@ -36,10 +36,10 @@ func TestGetRomanNumber(t *testing.T) {
 		{3999, "MMMCMXCIX"},
 	}
 
-	for _, tt := range tests {
-		var actual = GetRomanNumber(tt.decimal)
-		if actual != tt.roman {
-			t.Error("Expected", tt.roman, "got", actual)
+	for _, test := range tests {
+		var actual = GetRomanNumber(test.decimal)
+		if actual != test.roman {
+			t.Error("Expected", test.roman, "got", actual)
 		}
 	}
 
