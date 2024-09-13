@@ -1,5 +1,9 @@
 package funandgames
 
+import (
+	"errors"
+)
+
 const Rows = 9
 const Cols = 9
 const SubGrid = 3
@@ -30,7 +34,7 @@ func (s *Sudoku) IsValid() bool {
 		for colIndex := 0; colIndex < Cols; colIndex++ {
 			cell := s.grid[rowIndex][colIndex]
 
-			if cell == Empty {
+			if isEmpty(cell) {
 				continue
 			} else if !isDigit(cell) {
 				return false
@@ -53,6 +57,44 @@ func (s *Sudoku) IsValid() bool {
 	return true
 }
 
+func (s *Sudoku) Solve() (*Sudoku, error) {
+
+	if !s.IsValid() {
+		return nil, errors.New("cannot solve a non-valid Sudoku")
+	}
+
+	row, col := findNextEmptyCell(s.grid)
+	if row < 0 || col < 0 {
+		return s, nil // no more empty cells + valid
+	}
+
+	for i := '1'; i <= '9'; i++ {
+
+		s.grid[row][col] = byte(i)
+		if s, _ := s.Solve(); s != nil {
+			return s, nil
+		}
+
+		s.grid[row][col] = byte(Empty)
+
+	}
+
+	return nil, nil
+
+}
+
+func findNextEmptyCell(grid [][]byte) (int, int) {
+	for rowIndex := 0; rowIndex < Rows; rowIndex++ {
+		for colIndex := 0; colIndex < Cols; colIndex++ {
+			cell := grid[rowIndex][colIndex]
+			if isEmpty(cell) {
+				return rowIndex, colIndex
+			}
+		}
+	}
+	return -1, -1
+}
+
 // Calculates the index of the 3x3 sub-grid
 func subGridIndex(row, col int) int {
 	return (row/SubGrid)*SubGrid + (col / SubGrid)
@@ -60,6 +102,10 @@ func subGridIndex(row, col int) int {
 
 func isDigit(b byte) bool {
 	return b >= '1' && b <= '9'
+}
+
+func isEmpty(b byte) bool {
+	return b == Empty
 }
 
 func NewSudoku(grid [][]byte) *Sudoku {
