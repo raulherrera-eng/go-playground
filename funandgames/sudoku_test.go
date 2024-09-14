@@ -56,8 +56,9 @@ func TestSudoku_IsValid(t *testing.T) {
 func TestSudoku_Solve(t *testing.T) {
 
 	tests := []struct {
-		grid  [][]byte
-		valid bool
+		grid     [][]byte
+		valid    bool
+		expected [][]byte
 	}{
 		{
 			valid: true,
@@ -71,6 +72,17 @@ func TestSudoku_Solve(t *testing.T) {
 				{'.', '6', '.', '.', '.', '.', '2', '8', '.'},
 				{'.', '.', '.', '4', '1', '9', '.', '.', '5'},
 				{'.', '.', '.', '.', '8', '.', '.', '7', '9'},
+			},
+			expected: [][]byte{
+				{'5', '3', '4', '6', '7', '8', '9', '1', '2'},
+				{'6', '7', '2', '1', '9', '5', '3', '4', '8'},
+				{'1', '9', '8', '3', '4', '2', '5', '6', '7'},
+				{'8', '5', '9', '7', '6', '1', '4', '2', '3'},
+				{'4', '2', '6', '8', '5', '3', '7', '9', '1'},
+				{'7', '1', '3', '9', '2', '4', '8', '5', '6'},
+				{'9', '6', '1', '5', '3', '7', '2', '8', '4'},
+				{'2', '8', '7', '4', '1', '9', '6', '3', '5'},
+				{'3', '4', '5', '2', '8', '6', '1', '7', '9'},
 			},
 		},
 	}
@@ -87,7 +99,11 @@ func TestSudoku_Solve(t *testing.T) {
 		} else if !test.valid && (err == nil || solved != nil) {
 			t.Error("solved a non-valid Sudoku")
 		} else if test.valid && solved != nil {
-			// all good :)
+
+			if !NewSudoku(test.expected).Equals(solved) {
+				t.Error("solution does not match")
+			}
+
 		}
 
 	}

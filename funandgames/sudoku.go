@@ -2,6 +2,7 @@ package funandgames
 
 import (
 	"errors"
+	"reflect"
 )
 
 const Rows = 9
@@ -106,6 +107,10 @@ func isDigit(b byte) bool {
 
 func isEmpty(b byte) bool {
 	return b == Empty
+}
+
+func (s *Sudoku) Equals(sudoku *Sudoku) bool {
+	return reflect.DeepEqual(s.grid, sudoku.grid)
 }
 
 func NewSudoku(grid [][]byte) *Sudoku {
